@@ -1,0 +1,235 @@
+{
+	"version": 6,
+	"cmakeMinimumRequired": {
+		"major": 3,
+		"minor": 25,
+		"patch": 0
+	},
+	"configurePresets": [
+		{
+			"name": "default-debug",
+			"displayName": "Default Config for Development(Debug)",
+			"description": "Debug build type using Ninja generator",
+			"generator": "Ninja",
+			"binaryDir": "${sourceDir}/build/${presetName}",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		},
+		{
+			"name": "default-release",
+			"displayName": "Default Config for release",
+			"description": "Release build type using Ninja generator",
+			"inherits": "default-debug",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release",
+				"BUILD_EXAMPLES": "OFF",
+				"BUILD_TESTS": "OFF",
+				"BUILD_DOCS": "OFF"
+			}
+		},
+		{
+			"name": "default-release-server",
+			"displayName": "Release only the Server App",
+			"inherits": "default-release",
+			"cacheVariables": {
+				"BUILD_CLIENT": "OFF"
+			}
+		},
+		{
+			"name": "default-release-client",
+			"displayName": "Release only the Client App",
+			"inherits": "default-release",
+			"cacheVariables": {
+				"BUILD_SERVER": "OFF"
+			}
+		},
+		{
+			"name": "default-debug-client",
+			"displayName": "Default Config for Development(Debug) only the Client App",
+			"inherits": ["default-release-client","default-debug"]
+		},
+		{
+			"name": "default-debug-server",
+			"displayName": "Default Config for Development(Debug) only the Server App",
+			"inherits": ["default-release-server","default-debug"]
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "default-release",
+			"configurePreset": "default-release"
+		},
+		{
+			"name": "default-debug",
+			"configurePreset": "default-debug"
+		},
+		{
+			"name": "default-release-server",
+			"configurePreset": "default-release-server"
+		},
+		{
+			"name": "default-debug-client",
+			"configurePreset": "default-debug-client"
+		},
+		{
+			"name": "default-debug-server",
+			"configurePreset": "default-debug-server"
+		},
+		{
+			"name": "default-release-client",
+			"configurePreset": "default-release-client"
+		},
+		{
+			"name": "default-documentation",
+			"configurePreset": "default-debug",
+			"targets": "doxygen_docs"
+		},
+		{
+			"name": "getClientCode",
+			"configurePreset": "default-debug",
+			"targets": "getClientCode"
+		},
+		{
+			"name": "build-pdf",
+			"configurePreset": "default-release",
+			"targets": "build_pdf",
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Linux"
+			}
+		}
+	],
+	"testPresets": [
+		{
+			"name": "default-debug",
+			"configurePreset": "default-debug",
+			"output": {
+				"outputOnFailure": true
+			},
+			"execution": {
+				"noTestsAction": "error",
+				"stopOnFailure": true
+			}
+		}
+	],
+	"packagePresets": [
+		{
+			"name": "default-release",
+			"description": "Release runtime components",
+			"configurePreset": "default-release",
+			"generators": [
+				"TGZ"
+			],
+			"variables": {
+				"CPACK_ARCHIVE_COMPONENT_INSTALL": "ON",
+				"CPACK_COMPONENTS_ALL": "CMakeProject"
+			},
+			"packageDirectory": "packages-${presetName}"
+		},
+		{
+			"name": "default-release-develop",
+			"description": "Release development components",
+			"inherits": "default-release",
+			"configurePreset": "default-release",
+			"variables": {
+				"CPACK_COMPONENTS_GROUPING": "ALL_COMPONENTS_IN_ONE",
+				"CPACK_ARCHIVE_COMPONENT_INSTALL": "OFF",
+				"CPACK_COMPONENTS_ALL": ""
+			}
+		}
+	],
+	"workflowPresets": [
+		{
+			"name": "default-release",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "default-release"
+				},
+				{
+					"type": "build",
+					"name": "default-release"
+				},
+				{
+					"type": "package",
+					"name": "default-release"
+				}
+			]
+		},
+		{
+			"name": "default-release-develop",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "default-release"
+				},
+				{
+					"type": "build",
+					"name": "default-release"
+				},
+				{
+					"type": "package",
+					"name": "default-release-develop"
+				}
+			]
+		},
+		{
+			"name": "default-debug",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "default-debug"
+				},
+				{
+					"type": "build",
+					"name": "default-debug"
+				},
+				{
+					"type": "test",
+					"name": "default-debug"
+				}
+			]
+		},
+		{
+			"name": "default-documentation",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "default-debug"
+				},
+				{
+					"type": "build",
+					"name": "default-documentation"
+				}
+			]
+		},
+		{
+			"name": "getClientCode",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "default-debug"
+				},
+				{
+					"type": "build",
+					"name": "getClientCode"
+				}
+			]
+		},
+		{
+			"name": "build-pdf",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "default-release"
+				},
+				{
+					"type": "build",
+					"name": "build-pdf"
+				}
+			]
+		}
+	]
+}

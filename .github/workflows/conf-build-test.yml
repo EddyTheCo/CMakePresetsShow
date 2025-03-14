@@ -1,0 +1,77 @@
+name: Build
+run-name: ${{ github.actor }} ${{ github.event_name }} to ${{ github.event.pull_request.base.ref }}
+
+on:
+
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [main,develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies for tests
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build libboost-all-dev qt6-base-dev
+
+      - name: Install dependencies for release
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        run: |
+          sudo apt-get update
+          sudo apt install -y texlive-full doxygen
+
+      - name: Build default develop with tests
+        shell: bash
+        run: |
+          cmake --workflow --preset default-debug
+
+
+      - name: Build default develop with releases
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        shell: bash
+        run: |
+          cmake --workflow --preset default-release-develop
+          cmake --workflow --preset default-documentation
+          cmake --workflow --preset build-pdf
+          rm -rf ./build/default-release-develop/packages-default-release-develop/_CPack_Packages
+
+      - name: Package github-page
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        working-directory: ${{ github.workspace }}/doc/html/
+        run: |
+          cmake -E make_directory ${{runner.temp}}/page-packages
+          cmake -E tar c ${{runner.temp}}/page-packages/github-pages.tar -- .
+
+      - name: Releases
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./build/default-release-develop/packages-default-release-develop/*
+            *.pdf
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        with:
+          name: 'github-pages'
+          path:  ${{runner.temp}}/page-packages/*
+
+      - name: Deploy to GitHub Pages
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        id: deployment
+        uses: actions/deploy-pages@v4

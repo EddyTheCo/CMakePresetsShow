@@ -1,0 +1,453 @@
+\RequirePackage{tikz, datetime, textpos}
+\usepackage{qrcode}
+%\usepackage{biblatex,hyperref}
+\usepackage{ifthen}
+\usetikzlibrary{positioning}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{arrows.meta,shapes}
+\usetikzlibrary{snakes}
+\usetikzlibrary{tikzmark}
+\usetikzlibrary{calc}
+\usetikzlibrary{quantikz}
+\usepackage{color, colortbl}
+\usepackage{wrapfig}
+\usepackage[nomessages]{fp}
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{sidecap}
+\usetikzlibrary{fit}
+\ProcessOptions
+\setbeamersize{text margin left=0.5cm,text margin right=0.5cm}
+\newdateformat{UKvardate}{%
+\monthname[\THEMONTH]\ \THEDAY, \THEYEAR}
+\UKvardate
+
+\definecolor{EDD_gray}{RGB}{0, 1, 0}
+\definecolor{EDD_green}{RGB}{252, 203, 13}
+\definecolor{MedianBrown}{RGB}{64, 75, 101}
+\definecolor{MedianLightBrown}{RGB}{235,221,195}
+\definecolor{MedianLightBlue}{RGB}{148,182,210}
+\definecolor{MedianOrange}{RGB}{221,128,71}
+\definecolor{MedianLightOrange}{RGB}{216,178,92}
+\definecolor{MedianUltraLightOrange}{RGB}{245,236,215}
+
+\definecolor{MetroDarkBlue}{RGB}{11,50,97}
+\definecolor{MetroBlue}{RGB}{31,73,125}
+\definecolor{MetroRed}{RGB}{232,64,46}
+\definecolor{MetroPurple}{RGB}{192,80,77}
+\definecolor{MetroGreen}{RGB}{155,187,89}
+\definecolor{MetroViolet}{RGB}{128,100,162}
+\definecolor{MetroLightBlue}{RGB}{75,172,198}
+\definecolor{MetroOrange}{RGB}{245,141,1}
+\definecolor{MetroVisitedLink}{RGB}{198,217,240}
+
+
+\setbeamercolor*{title page header}{fg=white}
+\setbeamercolor*{title}{fg=EDD_gray}
+\setbeamercolor*{author}{fg=white}
+\setbeamercolor*{date}{fg=white}
+\setbeamercolor*{item}{fg=EDD_gray}
+\setbeamercolor*{frametitle}{fg=EDD_gray}
+\setbeamercolor*{block title}{fg=white, bg=EDD_gray}
+\setbeamercolor*{block title example}{fg=white, bg=EDD_gray}
+\setbeamercolor*{block body}{bg=white}
+\setbeamercolor*{block body example}{bg=white}
+\setbeamercolor*{section in toc}{fg=black}
+\setbeamercolor*{section page}{fg=white}
+\setbeamercolor*{bibliography entry title}{fg=black}
+\setbeamercolor*{bibliography entry author}{fg=black}
+\setbeamercolor*{bibliography entry location}{fg=black}
+\setbeamercolor*{bibliography entry note}{fg=black}
+
+
+\definecolor{graylow}{gray}{0.8}
+\newcolumntype{g}{>{\columncolor{graylow}}c}
+
+\newcommand\Wider[2][3em]{%
+	\makebox[\linewidth][c]{%
+		\begin{minipage}{\dimexpr\textwidth+#1\relax}
+			\raggedright#2
+		\end{minipage}%
+	}%
+}
+\newcommand{\highlight}[2]{
+	\only<#2>{
+		\tikzstyle{mybox} = [draw=MetroRed,  very thick,rounded corners,
+		rectangle]
+		\begin{tikzpicture}[baseline=(box.base)]
+			\node [mybox,align=center,pos=0.5] (box)  {\noexpand{#1}};
+		\end{tikzpicture}
+	}
+}
+\gdef\lbook{\tikz{\draw[color=EDD_gray, semithick] rectangle(.22,.333);\draw (0.04,0.08)--(0.18,0.08);\draw (0.04,0.11)--(0.18,0.11);\draw (0.04,0.14)--(0.18,0.14);\draw (0.04,0.17)--(0.18,0.17);\draw (0.04,0.24)--(0.18,0.24);}}
+\setbeamerfont{section page}{size=\LARGE}
+\setbeamerfont{title}{size=\LARGE}
+\setbeamerfont{author}{size=\Large}
+\setbeamerfont{date}{size=\small}
+\setbeamerfont{block body}{size=\small}
+\setbeamerfont{footnote}{size=\tiny}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{%
+\tikz{%
+	\fill[color=EDD_green] (-0.4, -0.025) rectangle (-0.15, 0.025); % Rectangle to the left of the circle
+
+    % Draw the circle to the right of the rectangle
+    \draw[color=EDD_green, ultra thick] (0, 0.0) circle (0.1); % Circle connected to the rectangle
+}%
+}%
+
+\setbeamertemplate{itemize subitem}{%
+\tikz{%
+    \fill[color=EDD_green] (-0.4, -0.025) rectangle (-0.15, 0.025);
+    \fill[color=EDD_green] (-0.4, 0.15) rectangle (-0.35, -0.02);
+    \draw[color=EDD_green, ultra thick] (0, 0.0) circle (0.1);
+}%
+}%
+\setbeamertemplate{sections/subsections in toc}[square]
+\setbeamertemplate{caption}{\tiny\insertcaption}
+\setbeamertemplate{bibliography item}{\lbook}
+\setbeamertemplate{bibliography entry article}{}
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+\setbeamertemplate{block}{dsdsds}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcounter{coun}
+\AtBeginEnvironment{frame}{\setcounter{coun}{0}}
+\newcommand{\progressframepercent}{
+    {\pgfmathparse{\insertframenumber/\inserttotalframenumber}%
+            \pgfmathprintnumber[fixed,precision=2]{\pgfmathresult}\,\%}}
+\gdef\mystring{}
+\newcommand\rect[1]{{%
+\tikz[baseline=(char.base)]\node[shape=rectangle,fill=MetroLightBlue,inner sep=0.5pt,font=\tiny,minimum size=5pt] (char) {\color{white} #1};}}
+
+%%%------------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\newcommand{\mydate}{\today}
+\setbeamertemplate{background}{
+	\begin{tikzpicture}
+		\useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+		\ifnum\thepage>1\relax% Not the title page
+			\fill[color=EDD_green] (0,8.35) rectangle(0.8,8.65);
+			\fill[color=EDD_gray] (0.9,8.35) rectangle(\the\paperwidth, 8.65);
+		\else% Title page
+			\fill[color=EDD_gray] (0.,0.) rectangle (\the\paperwidth,\the\paperheight);
+			\draw [line width=0.5mm, EDD_green] (\the\paperwidth*0.05,\the\paperheight*0.7) rectangle (\the\paperwidth*0.95,\the\paperheight*0.9) node[pos=.5,text=white,text width=11cm,align=center] {
+				\usebeamerfont{title}\usebeamercolor{title}\inserttitle%
+			};
+
+\fill[color=EDD_green] (\the\paperwidth*0.05,\the\paperheight*0.72) rectangle (\the\paperwidth*0.079,\the\paperheight*0.725);
+    \draw[color=EDD_green, ultra thick] (\the\paperwidth*0.085,\the\paperheight*0.724) circle (0.1);
+
+\fill[color=EDD_green] (\the\paperwidth*0.05,\the\paperheight*0.77) rectangle (\the\paperwidth*0.068,\the\paperheight*0.765);
+\fill[color=EDD_green] (\the\paperwidth*0.067,\the\paperheight*0.77) rectangle (\the\paperwidth*0.071,\the\paperheight*0.75);
+    \draw[color=EDD_green, ultra thick] (\the\paperwidth*0.068,\the\paperheight*0.74) circle (0.08);
+
+    \draw [line width=0.25mm, EDD_gray] (\the\paperwidth*0.1,\the\paperheight*0.55) -- (\the\paperwidth*0.9,\the\paperheight*0.55) node[pos=0.5] {
+				\begin{beamercolorbox}{date}
+					\usebeamerfont{date}\insertinstitute%
+				\end{beamercolorbox}
+
+			};
+			\draw [line width=0.25mm, EDD_green] (\the\paperwidth*0.1,\the\paperheight*0.025) -- (\the\paperwidth,\the\paperheight*0.025) node[pos=0.6, above] {
+				\begin{beamercolorbox}{date}
+					\usebeamerfont{date}\mydate    %\insertdate
+				\end{beamercolorbox}
+
+			};
+			\draw [line width=0.25mm, EDD_green] (\the\paperwidth*0.1,\the\paperheight*0.025) -- (\the\paperwidth,\the\paperheight*0.025) node[pos=0.95, above] {
+				\begin{beamercolorbox}{author}
+					\usebeamerfont{author}\insertauthor%
+				\end{beamercolorbox}
+
+			};
+
+			\fill[color=white] (0,\the\paperheight*0.2) rectangle(\the\paperwidth,\the\paperheight*0.4);
+
+		\fi
+	\end{tikzpicture}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\newenvironment{xplainframe}{\bgroup\setbeamertemplate{background}{}\begin{frame}[plain]}{\end{frame}\egroup}
+%%%%%555%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55+
+\setbeamertemplate{title page}{
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\setbeamertemplate{logo}{
+	\begin{tikzpicture}
+		\useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+		\ifnum\thepage>1\relax% Not the title page
+			\node[align=right,above] (toplogos) at (\the\paperwidth*0.92,\the\paperheight*0.9)
+			{\IfFileExists{imagenes/Logo1.png}{\includegraphics[height=0.80cm]{imagenes/Logo1small.png}}{}
+				\IfFileExists{imagenes/Logo2.png}{\includegraphics[height=0.80cm]{imagenes/Logo2small.png}}{}
+			\IfFileExists{imagenes/Logo3.png}{\includegraphics[height=0.80cm]{imagenes/Logo3small.png}}{}};
+		\else% Title page
+			\node[align=center]  at (\the\paperwidth*0.52,\the\paperheight*0.3)
+			{\IfFileExists{imagenes/Logo1.png}{\includegraphics[height=1.40cm]{imagenes/Logo1.png}}{}
+				\IfFileExists{imagenes/Logo2.png}{\hspace{1cm}\includegraphics[height=1.80cm]{imagenes/Logo2.png}}{}
+			\IfFileExists{imagenes/Logo3.png}{\hspace{1cm}\includegraphics[height=1.80cm]{imagenes/Logo3.png}}{}};
+		\fi
+	\end{tikzpicture}
+
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\def\IfEmptyTF#1{%
+	\if\relax\detokenize{#1}\relax
+		\expandafter\@firstoftwo
+	\else
+		\expandafter\@secondoftwo
+\fi}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\newcommand{\finalframe}[2]{{
+		\bigtemplate{Thank you for your attention}{
+
+			\begin{center}
+				\IfEmptyTF{#1}%
+				{}%
+				{\textcolor{EDD_green}{Contact us:}
+	
+				#1
+
+			\quad \qrcode{#1}}%
+			\end{center}
+		}
+}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\bigtemplate}[2]{{
+		\setbeamertemplate{background}{
+			\begin{tikzpicture}
+				\useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+				\draw (\the\paperwidth*0.55,\the\paperheight*0.79) node[below, fill=EDD_gray,thick,text width=11.5cm,minimum height=\the\paperheight*0.1] (tit){
+					\begin{beamercolorbox}{section page}
+						\LARGE        #1
+					\end{beamercolorbox}
+
+				};
+				\node[align=center,below = of tit]  {
+					\begin{beamercolorbox}{}
+						{\usebeamerfont{date}
+							\begin{center}
+								\noexpand{#2}
+							\end{center}
+						}
+				\end{beamercolorbox}};
+				\node[rectangle,fill = EDD_green,minimum width = \the\paperwidth*0.15,minimum height=\the\paperheight*0.1,below] (r) at (0,\the\paperheight*0.79) {\vphantom{\parbox{9cm}{ \LARGE        #1}}};
+
+			\end{tikzpicture}
+		}
+		\setbeamertemplate{logo}{
+			\begin{tikzpicture}
+				\useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+				\node[align=center] (tit)  at (\the\paperwidth*0.52,\the\paperheight*0.9)
+				{\IfFileExists{imagenes/Logo1.png}{\includegraphics[height=1.50cm]{imagenes/Logo1.png}}{}
+					\IfFileExists{imagenes/Logo2.png}{\hspace{1cm}\includegraphics[height=1.50cm]{imagenes/Logo2.png}}{}
+				\IfFileExists{imagenes/Logo3.png}{\hspace{1cm}\includegraphics[height=1.50cm]{imagenes/Logo3.png}}{}};
+			\end{tikzpicture}
+		}
+		\frame{}
+}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\tableOfCont}{{
+		\bigtemplate{Table of contents}{\tableofcontents}
+}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\Acknowledgements}[1]{{
+		\bigtemplate{Acknowledgements}{#1}
+}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\MyIncludePic}[4]{
+	\IfFileExists{#1}{
+		\begin{tikzpicture}
+			\node[align=center] (tit)  at (current bounding box.center){
+			\includegraphics[width=#2]{#1}};
+
+			\IfEmptyTF{#4}%
+			{}%
+			{\node[align=right,text width=#2,above]   at (tit.north){
+			\tiny \color{MetroLightBlue}#4};}
+			\IfEmptyTF{#3}%
+			{}%
+			{\node[align=justify,text width=#2,below]   at (tit.south){
+			\tiny \begin{spacing}{0.5}  \fontdimen2\font=0.5ex #3\end{spacing}};}
+		\end{tikzpicture}
+	}{ #1 does not exist}
+}
+
+%%------------------------------------------------------------------------------------------------------------------------------------------
+%\newcommand{\MyFigure}[4]{
+%\begin{figure}[!h]
+%       \begin{spacing}{0.5}  \fontdimen2\font=0.5ex  \MyIncludePic{#1}{#2}{#3} \IfEmptyTF{#4}%
+%                        {}%
+%       {\caption{#4}}\end{spacing}
+%\end{figure}
+%
+%       }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setbeamertemplate{section page}{
+	\begin{textblock*}{12cm}(1.8cm,-0.9cm)
+		\begin{beamercolorbox}{section page}
+			\insertsectionhead
+		\end{beamercolorbox}
+	\end{textblock*}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setbeamertemplate{frametitle}{
+	\begin{textblock*}{12cm}(0.8cm,0.5cm)
+		\begin{beamercolorbox}{frametitle}
+			\insertframetitle
+		\end{beamercolorbox}
+	\end{textblock*}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\newcommand{\roundedBlock}[4]{{
+		\tikzstyle{uptitle} =[fill=EDD_gray, text=white,rounded corners]
+		\tikzstyle{mybox} = [draw=EDD_gray,  very thick,
+		rectangle, rounded corners, inner sep=4pt]
+		\begin{tikzpicture}
+			\node [mybox,align=center,text width=#4] (box)
+			{
+				\begin{minipage}{#4}
+					\begin{center}
+						\noexpand{\setbeamertemplate{items}[square] #2}
+					\end{center}
+				\end{minipage}
+			};
+			\IfEmptyTF{#1}%
+			{}%
+			{
+				\node[uptitle,right=0.2,align=left] at (box.north west) {
+					%				   \begin{minipage}{box.width}
+					\small #1
+					%				   \end{minipage}
+			};}
+			\IfEmptyTF{#3}%
+			{}%
+			{\node[uptitle,left=0.2,align=right] at (box.south east) {
+					\tiny			   #3
+			};}
+
+		\end{tikzpicture}
+}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%55
+\newcommand{\noRoundedBlock}[4]{{
+		\tikzstyle{uptitle} =[fill=EDD_gray, text=white]
+		\tikzstyle{mybox} = [inner sep=5pt]
+		\begin{tikzpicture}
+			\node [mybox,align=center] (box)
+			{
+				\begin{minipage}{#4}
+					\begin{center}
+						\IfEmptyTF{#2}%
+						{\vspace*{-\baselineskip}\setlength\belowdisplayshortskip{0pt}}
+						{}%
+						\noexpand{#2}
+					\end{center}
+				\end{minipage}
+			};
+			\IfEmptyTF{#1}%
+			{}%
+			{
+				\node[uptitle,right=0.2,align=left,text width=0.7*#4] at (box.north west) {
+					%                               \begin{minipage}{box.width}
+					#1
+					%                                  \end{minipage}
+			};}
+			\IfEmptyTF{#3}%
+			{}%
+			{\node[uptitle,left=0.2,align=right, text width=0.25*#4] at (box.south east) {
+					#3
+			};}
+
+		\end{tikzpicture}
+}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\columnframe}[4]{{
+		\begin{tikzpicture}
+			\node[align=left] (c1)
+			{
+				\begin{minipage}{#3}
+					\noexpand{#1}
+				\end{minipage}
+			};
+			\hspace{0.5cm}
+			\node[right=0] (c2) at (c1.east)
+			{
+				\begin{minipage}{#4}
+					\noexpand{#2}
+				\end{minipage}
+			};
+		\end{tikzpicture}
+
+
+}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\postertemplate}[1]{{
+		\setbeamertemplate{background}{
+			\begin{tikzpicture}
+				\useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+				\fill[color=EDD_gray] (0,7.6) rectangle (8.5, 9.1);
+				\node[align=left,below,text width=8cm] (tit)  at (4.2,\the\paperheight*0.94){
+					\begin{beamercolorbox}{section page}
+						\Large       \inserttitle
+					\end{beamercolorbox}
+
+				};
+				\draw [line width=0.4mm, EDD_gray]  (4,7.1) -- (4,7.6) node[right,pos=0.5,align=right] (aut) {
+					\begin{beamercolorbox}{frametitle}
+						\small \insertauthor%
+					\end{beamercolorbox}
+				};
+				\draw [line width=0.01mm, white]  (12,7.2) -- (6.2,7.2) node[below]  {
+					\color{black}
+					\noexpand{#1}
+				};
+			\end{tikzpicture}
+		}
+		\setbeamertemplate{logo}{
+			\begin{tikzpicture}
+				\useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+				\node[align=right] (tit)  at (\the\paperwidth*0.85,\the\paperheight*0.85)
+				{\IfFileExists{imagenes/Logo1.png}{\includegraphics[height=1cm]{imagenes/Logo1.png}}{}
+					\IfFileExists{imagenes/Logo2.png}{\hspace{0.5cm}\includegraphics[height=1.cm]{imagenes/Logo2.png}}{}
+				\IfFileExists{imagenes/Logo3.png}{\hspace{0.5cm}\includegraphics[height=1cm]{imagenes/Logo3.png}}{}};
+			\end{tikzpicture}
+		}
+		\frame{}
+}}
+
+
+\DeclareMathOperator{\Tr}{Tr}
+\lstdefinestyle{mylsstyle}{
+    backgroundcolor=\color{EDD_green},
+    commentstyle=\color{MetroLightBlue},
+    keywordstyle=\color{EDD_gray}\bfseries,
+    numberstyle=\tiny\color{EDD_gray},
+    rulecolor=\color{EDD_green},
+    stringstyle=\color{white},
+    basicstyle=\ttfamily\tiny,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=false,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+\lstset{style=mylsstyle}

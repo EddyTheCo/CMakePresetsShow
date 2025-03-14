@@ -1,0 +1,188 @@
+{
+	"version": 6,
+	"cmakeMinimumRequired": {
+		"major": 3,
+		"minor": 25,
+		"patch": 0
+	},
+	"configurePresets": [
+		{
+			"name": "user-debug",
+			"displayName": "User Config for Development(Debug)",
+			"inherits": "default-debug",
+			"cacheVariables": {
+				"CMAKE_PREFIX_PATH": "/home/amarula/Qt/6.8.0/gcc_64/"
+			}
+		},
+		{
+			"name": "user-release",
+			"displayName": "User Config for release",
+			"inherits": ["user-debug","default-release"]
+		},
+		{
+			"name": "user-release-client",
+			"displayName": "User config for release only the Client App",
+			"inherits": ["user-debug","default-release-client"]
+		},
+		{
+			"name": "user-debug-client",
+			"displayName": "User Config for Development(Debug) only the Client App",
+			"inherits": ["user-debug","default-debug-client"]
+		},
+		{
+			"name": "user-cross-debug-server",
+			"displayName": "User Config for Development(Debug) of the Server App using the yocto sdk",
+			"inherits": "default-debug-server",
+			"toolchainFile": "/opt/rasp-test/sysroots/x86_64-pokysdk-linux/usr/share/cmake/cortexa53-poky-linux-toolchain.cmake",
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Linux"
+			},
+			"vendor": {
+				"qt.io/QtCreator/1.0": {
+					"debugger": {
+						"DisplayName": "gdb-multiarch",
+						"Binary": "/usr/bin/gdb-multiarch"
+					}
+				}
+			}
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "user-release",
+			"configurePreset": "user-release"
+		},
+		{
+			"name": "user-debug",
+			"configurePreset": "user-debug"
+		},
+		{
+			"name": "user-debug-client",
+			"configurePreset": "user-debug-client"
+		},
+		{
+			"name": "user-release-client",
+			"configurePreset": "user-release-client"
+		},
+		{
+			"name": "userGetClientCode",
+			"configurePreset": "user-debug",
+			"inherits": "getClientCode"
+		},
+		{
+			"name": "user-cross-debug-server",
+			"configurePreset": "user-cross-debug-server",
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Linux"
+			}
+
+		}
+	],
+	"testPresets": [
+		{
+			"name": "user-debug",
+			"configurePreset": "user-debug",
+			"inherits": "default-debug"
+		}
+	],
+	"packagePresets": [
+		{
+			"name": "user-release",
+			"configurePreset": "user-release",
+			"inherits": "default-release"
+		},
+		{
+			"name": "user-cross-debug-server",
+			"configurePreset": "user-cross-debug-server",
+			"inherits":"default-release"
+		},
+		{
+			"name": "user-release-develop",
+			"inherits": "default-release-develop",
+			"configurePreset": "user-release"
+		}
+	],
+	"workflowPresets": [
+		{
+			"name": "user-release",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "user-release"
+				},
+				{
+					"type": "build",
+					"name": "user-release"
+				},
+				{
+					"type": "package",
+					"name": "user-release"
+				}
+			]
+		},
+		{
+			"name": "user-release-develop",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "user-release"
+				},
+				{
+					"type": "build",
+					"name": "user-release"
+				},
+				{
+					"type": "package",
+					"name": "user-release-develop"
+				}
+			]
+		},
+		{
+			"name": "user-debug",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "user-debug"
+				},
+				{
+					"type": "build",
+					"name": "user-debug"
+				},
+				{
+					"type": "test",
+					"name": "user-debug"
+				}
+			]
+		},
+		{
+			"name": "userGetClientCode",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "user-debug"
+				},
+				{
+					"type": "build",
+					"name": "userGetClientCode"
+				}
+			]
+		},
+		{
+			"name": "user-cross-debug-server",
+			"steps": [
+				{
+					"type": "configure",
+					"name": "user-cross-debug-server"
+				},
+				{
+					"type": "build",
+					"name": "user-cross-debug-server"
+				}
+			]
+		}
+	]
+}
