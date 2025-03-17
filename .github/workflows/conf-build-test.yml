@@ -36,19 +36,17 @@ jobs:
           sudo apt install -y texlive-full doxygen
 
       - name: Build default develop with tests
-        shell: bash
         run: |
           cmake --workflow --preset default-debug
 
 
       - name: Build default develop with releases
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
-        shell: bash
         run: |
           cmake --workflow --preset default-release-develop
           cmake --workflow --preset default-documentation
           cmake --workflow --preset build-pdf
-          rm -rf ./build/default-release-develop/packages-default-release-develop/_CPack_Packages
+          rm -rf ./build/default-release/packages-default-release-develop/_CPack_Packages
 
       - name: Package github-page
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
@@ -62,7 +60,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ./build/default-release-develop/packages-default-release-develop/*
+            ./build/default-release/packages-default-release-develop/*
             *.pdf
 
       - uses: actions/upload-artifact@v4
