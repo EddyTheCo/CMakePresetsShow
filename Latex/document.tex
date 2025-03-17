@@ -131,13 +131,13 @@
 \begin{frame}[fragile]{Export the targets}%
 	\vspace{1cm}
 	\roundedBlock{Install interface}{
-		\lstinputlisting[firstline=99, lastline=103]{../CMakeLists.txt}
+		\lstinputlisting[firstline=102, lastline=106]{../CMakeLists.txt}
 	}{}{0.9\textwidth}
 	% Here we have the install EXPORT command. This will create a export file called 
 	% ProjectName-config.cmake with the targets that were exported and hopefully installed by this project.
 	% Simply it creates imported targets using the already installed targets.
 	\roundedBlock{Build interface}{
-		\lstinputlisting[firstline=122, lastline=125]{../CMakeLists.txt}
+		\lstinputlisting[firstline=125, lastline=128]{../CMakeLists.txt}
 	}{}{0.9\textwidth}
 	% The export EXPORT command. Do the same that the previous install command 
 	% but it will use the targets from the build directory.
@@ -184,7 +184,7 @@
 \begin{frame}[fragile]{Define the dependency targets and the version}\small%
 	\vspace{1cm}
 
-	\lstinputlisting[firstline=108, lastline=112]{../CMakeLists.txt}
+	\lstinputlisting[firstline=111, lastline=115]{../CMakeLists.txt}
 	% Here we have the configure_package_config_file command.
 	\only<1>{\roundedBlock{Config.cmake.in}{
 		\lstinputlisting[firstline=1, lastline=4]{../Config.cmake.in}
@@ -212,9 +212,9 @@
 	% When a consumer checks the exports of the library it will see that it depends on Qt6::Core,
 	% So this target should be defined before that(it is defined by find_dependency/find_package).
 	\only<2->{
-	\lstinputlisting[firstline=113, lastline=116]{../CMakeLists.txt}}
+	\lstinputlisting[firstline=116, lastline=119]{../CMakeLists.txt}}
 	\only<3->{
-	\lstinputlisting[firstline=117, lastline=121]{../CMakeLists.txt}}
+	\lstinputlisting[firstline=120, lastline=124]{../CMakeLists.txt}}
 	\only<4->{
 		\begin{block}{\small \texttt{find\_package} will work using}
 			\begin{itemize}\small%
@@ -497,7 +497,7 @@
 \begin{frame}[fragile]{Continuous Integration}\small%
 	\vspace{2cm}
 	\begin{center}
-		\lstinputlisting[firstline=27, lastline=50]{../.github/workflows/conf-build-test.yml}
+		\lstinputlisting[firstline=27, lastline=48]{../.github/workflows/conf-build-test.yml}
 	\end{center}
 \end{frame}
 
