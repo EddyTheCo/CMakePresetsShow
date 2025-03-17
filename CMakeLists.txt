@@ -93,6 +93,9 @@ if(Qt6_FOUND AND Boost_FOUND)
       include(CTest)
       add_subdirectory(tests)
     endif(BUILD_TESTS)
+    set(CPACK_PACKAGE_FILE_NAME
+        "${PROJECT_NAME}-v${SEMVER}-${CMAKE_SYSTEM_NAME}_${CMAKE_SYSTEM_VERSION}-${CMAKE_SYSTEM_PROCESSOR}-${CMAKE_CXX_COMPILER_ID}"
+    )
     include(CPack)
   endif(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
