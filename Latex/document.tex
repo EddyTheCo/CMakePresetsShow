@@ -128,6 +128,31 @@
 	\end{block}
 \end{frame}
 
+\begin{frame}[fragile]{Associate targets with the export and install}%
+	\vspace{1cm}
+	\lstinputlisting[firstline=43, lastline=47]{../CMakeLists.txt}
+	\lstinputlisting[firstline=38, lastline=41]{../CMakeLists.txt}
+	\begin{block}{\small Modular Install}
+		\begin{itemize}\small%
+			\item Group by \texttt{COMPONENT}s%
+			\item Associate targets with export
+			\item Used by CPack to create binary installers
+		\end{itemize}
+	\end{block}
+	% We have the CMake install command that allows to install/add to the package the different
+	% targets and files. It allows to set the destination and group these in components.
+	% These instructions are used by CPack to create the binary installers with different generators.
+	% Generators like NSIS, DEB, TAR, etc.
+	% In this example we add the library target to the package and the export file.
+	% The previous export commands will add the targets to the export file.
+	% It use the default install path depending on the type of the library(shared, static, windows, linux).
+	% It adds by default the library to a certain component.
+	% If the library is a static library will be added to the development component.
+	% We also install the headers of the library and add them to the development component.
+	% With this we can create package with only the runtime components or with the development components.
+	% This decision is made when using the cpack command or as we will see later with the CMake Presets.
+\end{frame}
+
 \begin{frame}[fragile]{Export the targets}%
 	\vspace{1cm}
 	\roundedBlock{Install interface}{
@@ -154,31 +179,6 @@
 			\item \texttt{find\_package()}%
 		\end{itemize}
 	\end{block}
-\end{frame}
-
-\begin{frame}[fragile]{Associate targets with the export and install}%
-	\vspace{1cm}
-	\lstinputlisting[firstline=43, lastline=47]{../CMakeLists.txt}
-	\lstinputlisting[firstline=38, lastline=41]{../CMakeLists.txt}
-	\begin{block}{\small Modular Install}
-		\begin{itemize}\small%
-			\item Group by \texttt{COMPONENT}s%
-			\item Associate targets with export
-			\item Used by CPack to create binary installers
-		\end{itemize}
-	\end{block}
-	% We have the CMake install command that allows to install/add to the package the different
-	% targets and files. It allows to set the destination and group these in components.
-	% These instructions are used by CPack to create the binary installers with different generators.
-	% Generators like NSIS, DEB, TAR, etc.
-	% In this example we add the library target to the package and the export file.
-	% The previous export commands will add the targets to the export file.
-	% It use the default install path depending on the type of the library(shared, static, windows, linux).
-	% It adds by default the library to a certain component.
-	% If the library is a static library will be added to the development component.
-	% We also install the headers of the library and add them to the development component.
-	% With this we can create package with only the runtime components or with the development components.
-	% This decision is made when using the cpack command or as we will see later with the CMake Presets.
 \end{frame}
 
 \begin{frame}[fragile]{Define the dependency targets and the version}\small%
