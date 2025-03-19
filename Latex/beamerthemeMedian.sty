@@ -58,7 +58,7 @@
 \setbeamercolor*{bibliography entry author}{fg=black}
 \setbeamercolor*{bibliography entry location}{fg=black}
 \setbeamercolor*{bibliography entry note}{fg=black}
-
+\setbeamertemplate{footline}{\hfill \insertframenumber/\inserttotalframenumber}
 
 \definecolor{graylow}{gray}{0.8}
 \newcolumntype{g}{>{\columncolor{graylow}}c}
@@ -429,16 +429,16 @@
 		\frame{}
 }}
 
-
+\definecolor{lightgray}{rgb}{0.95,0.95,0.95}
 \DeclareMathOperator{\Tr}{Tr}
 \lstdefinestyle{mylsstyle}{
-    backgroundcolor=\color{EDD_green},
-    commentstyle=\color{MetroLightBlue},
+    backgroundcolor=\color{lightgray},
+    commentstyle=\color{EDD_green},
     keywordstyle=\color{EDD_gray}\bfseries,
     numberstyle=\tiny\color{EDD_gray},
     rulecolor=\color{EDD_green},
-    stringstyle=\color{white},
-    basicstyle=\ttfamily\tiny,
+    stringstyle=\color{EDD_gray},
+    basicstyle=\bfseries\ttfamily\tiny,
     breakatwhitespace=false,
     breaklines=true,
     captionpos=b,
